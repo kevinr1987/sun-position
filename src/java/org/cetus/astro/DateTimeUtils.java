@@ -29,12 +29,28 @@ import org.apache.log4j.Logger;
 
 /**
  * @author Inaki Ortiz de Landaluce Saiz
- *
+ * 
  */
 public class DateTimeUtils {
 
   private static Logger log = Logger.getRootLogger();
 
+  /**
+   * Calculates the difference between the Universal Time and the Terrestrial
+   * Time (also known as Dynamical Time) given a year within the 21st century.
+   * The exact value of such difference can be deduced only from observations.
+   * However an approximate value can be obtained through interpolation by means
+   * of an expression due to Chapront and Francou and issued by the Bureau des
+   * Longitudes in Paris on December 1977.
+   * 
+   * @param year
+   *          year within the current century.
+   */
+  public static double deltaTimeCurrentCentury(int year) {
+    // calculate time measured in centuries from epoch 2000.0
+    double t = (double)(year - 2000) / 100;
+    return (102 + 102*t + 25.3*t*t + (year-2100)*0.37);
+  }
 
   /**
    * Converts a Julian Day into a GregorianCalendar
@@ -49,7 +65,7 @@ public class DateTimeUtils {
       throws IllegalArgumentException, ParseException {
 
     log.debug("Into convertJulianDayToCalendarDouble");
-    
+
     if (jd < 0) {
       throw new IllegalArgumentException("Unsupported argument " + jd
           + ". Julian Day must be positive");
