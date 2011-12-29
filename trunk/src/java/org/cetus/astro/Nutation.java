@@ -40,8 +40,8 @@ public class Nutation {
    */
   public Nutation(JulianDay jd) {
     // calculate time measured in Julian centuries of 36525 ephemeris days from
-    // the epoch J2000.0 (2000 January 1.5 or 2451545.0 JD)
-    calculateNutation((jd.getJD() - 2451545.0) / 36525);
+    // the epoch J2000.0
+    calculateNutation(jd.getTimeFromJ2000());
   }
   
   /**
