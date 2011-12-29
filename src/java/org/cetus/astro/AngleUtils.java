@@ -28,8 +28,8 @@ public class AngleUtils {
   @SuppressWarnings("unused")
   private static Logger log = Logger.getRootLogger();
 
-  public static double hmsToHour(int hour, int minute, double second) {
-    return (double) hour + (double) minute / 60 + (double) second / (60 * 60);
+  public static double hmsToDeg(int hour, int minute, double second) {
+    return sexagesimalToDeg(hour, minute, second) * 15;
   }
   
   /**
@@ -52,5 +52,5 @@ public class AngleUtils {
       double arcsecond) {
     return (double) degree + (double) arcminute / 60 + (double) arcsecond
         / (60 * 60);
-  }  
+  }
 }
