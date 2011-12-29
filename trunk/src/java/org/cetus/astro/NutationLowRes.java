@@ -43,8 +43,8 @@ public class NutationLowRes extends Nutation {
     double t2 = t*t;
     log.debug("Julian centuries since J2000.0=" + t);
     
-    // calculate mean longitude of the Sun and Moon referred to the mean equinox of the 
-    // date o(t^2)
+    // calculate mean longitude of the Sun and Moon referred to the mean equinox
+    // of the date o(t^2)
     double mlonSun = 280.4665 + 36000.7698 * t;
     double mlonSunRadians = Math.toRadians(mlonSun);
     double mlonMoon = 218.3165 + 481267.8813 * t;
@@ -53,7 +53,7 @@ public class NutationLowRes extends Nutation {
     log.debug("Mean longitude of the Moon=" + mlonMoon + " degrees");
     
     // calculate the longitude of the ascending node of the Moon's mean orbit
-    // on the ecliptic measured from the mean equinox of the date o(t^2)
+    // on the ecliptic measured from the mean equinox of the date o(t^4)
     double omega = 125.04452 - 1934.136261*t + 0.0020708 * t2 + t*t2 / 450000;
     double omegaRadians = Math.toRadians(omega);
     log.debug("Longitude of the ascending node of the Moon's mean orbit="
@@ -68,6 +68,5 @@ public class NutationLowRes extends Nutation {
         - 0.09 * Math.cos(2 * omegaRadians);    
     log.debug("Nutation in longitude=" + deltaLon + "degrees");
     log.debug("Nutation in obliquity=" + deltaEps + "degrees");
-  }
-  
+  }  
 }
