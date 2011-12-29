@@ -33,9 +33,7 @@ public class EclipticObliquity {
    * @return the mean obliquity in degrees
    */
   public static double calculateMeanObliquity(JulianDay jd) {
-    // calculate time measured in Julian centuries of 36525 ephemeris days from
-    // the epoch J2000.0 (2000 January 1.5 or 2451545.0 JD)
-    return calculateMeanObliquity((jd.getJD() - 2451545.0) / 36525);
+    return calculateMeanObliquity(jd.getTimeFromJ2000());
   }
 
   /**
@@ -66,9 +64,7 @@ public class EclipticObliquity {
    * @return the true obliquity in degrees         
    */
   public static double calculateTrueObliquity(JulianDay jd) {
-    // calculate time measured in Julian centuries of 36525 ephemeris days from
-    // the epoch J2000.0 (2000 January 1.5 or 2451545.0 JD)
-    return calculateTrueObliquity((jd.getJD() - 2451545.0) / 36525);
+    return calculateTrueObliquity(jd.getTimeFromJ2000());
   }
 
   /**

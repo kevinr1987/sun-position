@@ -122,6 +122,18 @@ public class JulianDay {
   public double getJD() {
     return this.jd;
   }
+  
+  /**
+   * Returns the time measured in Julian centuries of 36525 ephemeris days from
+   * the epoch J2000.0
+   * 
+   * @return time measured in Julian centuries of 36525 ephemeris days from the
+   *         epoch J2000.0
+   */
+  public double getTimeFromJ2000() {
+    // epoch J2000.0 is 2000 January 1.5 or 2451545.0 JD    
+    return (getJD() - 2451545.0) / 36525;
+  }  
 
   /**
    * Returns the Modified Julian Day
