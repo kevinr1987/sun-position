@@ -69,7 +69,7 @@ public class EclipticObliquity {
 
   /**
    * Calculates the obliquity of the ecliptic with respect to the true equator
-   * for the given time. The correction for nutation is not taken into account.
+   * for the given time. The correction for nutation is taken into account.
    * 
    * @param t
    *          the time measured in Julian centuries of 36525 ephemeris days from
