@@ -29,7 +29,7 @@ public class EclipticObliquity {
    * account.
    * 
    * @param jd
-   *          the julian day 
+   *          the julian day
    * @return the mean obliquity in degrees
    */
   public static double calculateMeanObliquity(JulianDay jd) {
@@ -48,10 +48,10 @@ public class EclipticObliquity {
   public static double calculateMeanObliquity(double t) {
     double t2 = t * t;
     // precision is up to the third term, i.e. o(t^4).
-    return AngleUtils.sexagesimalToDeg(23, 26, 21.448)
-        - AngleUtils.sexagesimalToDeg(0, 0, 46.8150) * t
-        - AngleUtils.sexagesimalToDeg(0, 0, 0.00059) * t2
-        + AngleUtils.sexagesimalToDeg(0, 0, 0.001813) * t * t2;
+    return AngleUtils.dmsToDeg(23, 26, 21.448)
+        - AngleUtils.dmsToDeg(0, 0, 46.8150) * t
+        - AngleUtils.dmsToDeg(0, 0, 0.00059) * t2
+        + AngleUtils.dmsToDeg(0, 0, 0.001813) * t * t2;
   }
 
   /**
@@ -61,7 +61,7 @@ public class EclipticObliquity {
    * 
    * @param jd
    *          the julian day
-   * @return the true obliquity in degrees         
+   * @return the true obliquity in degrees
    */
   public static double calculateTrueObliquity(JulianDay jd) {
     return calculateTrueObliquity(jd.getTimeFromJ2000());
@@ -74,7 +74,7 @@ public class EclipticObliquity {
    * @param t
    *          the time measured in Julian centuries of 36525 ephemeris days from
    *          the epoch J2000.0
-   * @return the true obliquity in degrees         
+   * @return the true obliquity in degrees
    */
   public static double calculateTrueObliquity(double t) {
     Nutation nutation = new Nutation(t);
