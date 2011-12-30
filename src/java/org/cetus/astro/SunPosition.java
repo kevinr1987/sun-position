@@ -26,20 +26,26 @@ public class SunPosition {
   private double altitude;
   private double azimuth;
 
+  /**
+   * Creates an instance of SunPosition for the given horizontal coordinates,
+   * both measured in degrees.
+   * @param azimuth azimuth in degrees
+   * @param altitude altitude in degrees
+   */
   public SunPosition(double azimuth, double altitude) {
     this.azimuth = azimuth;
     this.altitude = altitude;
   }
 
   /**
-   * @return the altitude
+   * @return the altitude in degrees
    */
   public double getAltitude() {
     return altitude;
   }
 
   /**
-   * @return the azimuth
+   * @return the azimuth in degrees
    */
   public double getAzimuth() {
     return azimuth;
@@ -47,7 +53,7 @@ public class SunPosition {
 
   /**
    * @param altitude
-   *          the altitude to set
+   *          the altitude to set (degrees)
    */
   public void setAltitude(double altitude) {
     this.altitude = altitude;
@@ -55,7 +61,7 @@ public class SunPosition {
 
   /**
    * @param azimuth
-   *          the azimuth to set
+   *          the azimuth to set (degrees)
    */
   public void setAzimuth(double azimuth) {
     this.azimuth = azimuth;
