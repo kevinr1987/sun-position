@@ -78,7 +78,7 @@ public class AtmosphericRefraction {
   private double calculateRefraction() {    
     double r = 1.02 / Math.tan(Math.toRadians(trueAltitudeDegrees + 10.3
         / (trueAltitudeDegrees + 5.11)));
-    // correct from standard conditions if air pressure and temperature
+    // correct from standard conditions of air pressure and temperature
     r = r * (this.pressureMillibars / 1010) * (283 / this.temperatureKelvin);
     return r;
   }
