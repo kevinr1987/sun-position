@@ -138,17 +138,12 @@ public class SunPositionAlgorithmLowRes extends SunPositionAlgorithm {
     double aberration = -0.00569;
     double nutationLon = new Nutation(t).getDeltaLongitude() / 3600;
     double lambda = tlon + aberration + nutationLon;
-    // double omega = 125.04 - 1934.136 * t; // longitude of the ascending node
-    // double lambda = tlon - 0.00569 - 0.00478 *
-    // Math.sin(Math.toRadians(omega));
     double lambdaRadians = Math.toRadians(lambda);
     log.debug("Apparent longitude=" + lambda + " degrees = "
         + AngleUtils.normalizeAngle(lambda, 0, 360) + " degrees");
 
     // calculate the true obliquity of the eclipse corrected for nutation o(t^4)
     double epsilon = EclipticObliquity.calculateTrueObliquity(t);
-    // double epsilon = EclipticObliquity.calculateMeanObliquity(t);
-    // epsilon += 0.00256 * Math.cos(Math.toRadians(omega));// nutation
     double epsilonRadians = Math.toRadians(epsilon);
     log.debug("Epsilon=" + epsilon + " degrees");
 
@@ -164,7 +159,7 @@ public class SunPositionAlgorithmLowRes extends SunPositionAlgorithm {
     log.debug("Dec=" + Math.toDegrees(decRadians) + " degrees" + " = "
         + AngleUtils.formatDegToDms(Math.toDegrees(decRadians), -180, 180));
 
-    // convert sun coordinates to horizontal
+    // convert sun coordinates from equatorial to horizontal
     double hourAngle = SiderealTime.calculateApparentSiderealTime(jd)
         - longitudeInDegrees - Math.toDegrees(rasRadians);
     double hourAngleRadians = Math.toRadians(hourAngle);
@@ -174,10 +169,14 @@ public class SunPositionAlgorithmLowRes extends SunPositionAlgorithm {
         Math.sin(hourAngleRadians),
         (Math.cos(hourAngleRadians) * Math.sin(latRadians) - Math
             .tan(decRadians) * Math.cos(latRadians)));
-    double altitude = Math.asin(Math.sin(latRadians) * Math.sin(decRadians)
+    double alt = Math.asin(Math.sin(latRadians) * Math.sin(decRadians)
         + Math.cos(latRadians) * Math.cos(decRadians)
         * Math.cos(hourAngleRadians));
     
-    return new SunPosition(Math.toDegrees(azimuth), Math.toDegrees(altitude));
+    // correct altitude from atmospheric refraction
+    double altCorrected = new AtmosphericRefraction(Math.toDegrees(alt))
+        .getApparentAltitude();
+    
+    return new SunPosition(Math.toDegrees(azimuth), altCorrected);
   }
 }
