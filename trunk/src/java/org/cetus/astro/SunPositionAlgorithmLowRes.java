@@ -21,6 +21,8 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
+import org.cetus.astro.coords.EquatorialCoordinates;
+import org.cetus.astro.coords.HorizontalCoordinates;
 import org.cetus.astro.util.AngleUtils;
 import org.cetus.astro.util.DateTimeUtils;
 
@@ -149,12 +151,12 @@ public class SunPositionAlgorithmLowRes extends SunPositionAlgorithm {
 
     // calculate the true obliquity of the eclipse corrected for nutation o(t^4)
     double epsilon = EclipticObliquity.calculateTrueObliquity(t,
-        nutation.getDeltaObliquity());   
+        nutation.getDeltaObliquity());
     double epsilonRadians = Math.toRadians(epsilon);
     log.debug("Epsilon=" + epsilon + " degrees");
 
-    // convert from ecliptic to equatorial assuming latitude is zero (valid for
-    // low accuracy calculation only)
+    // convert from ecliptic to equatorial assuming sun's ecliptic latitude is
+    // zero (valid for low accuracy calculation only)
     double rasRadians = Math.atan2(
         (Math.sin(lambdaRadians) * Math.cos(epsilonRadians)),
         Math.cos(lambdaRadians));
@@ -166,29 +168,23 @@ public class SunPositionAlgorithmLowRes extends SunPositionAlgorithm {
         + AngleUtils.formatDegToDms(Math.toDegrees(decRadians), -180, 180));
 
     // convert sun coordinates from equatorial to horizontal
-    double hourAngle = SiderealTime.calculateApparentSiderealTime(jd,
-        nutation.getDeltaLongitude(), nutation.getDeltaObliquity())
-        - longitudeInDegrees - Math.toDegrees(rasRadians);
-    double hourAngleRadians = Math.toRadians(hourAngle);
-    double latRadians = Math.toRadians(this.latitudeInDegrees);
-
-    double azimuthRadians = Math.atan2(
-        Math.sin(hourAngleRadians),
-        (Math.cos(hourAngleRadians) * Math.sin(latRadians) - Math
-            .tan(decRadians) * Math.cos(latRadians)));
-    double altRadians = Math.asin(Math.sin(latRadians) * Math.sin(decRadians)
-        + Math.cos(latRadians) * Math.cos(decRadians)
-        * Math.cos(hourAngleRadians));
-
-    log.info("Azimuth=" + Math.toDegrees(azimuthRadians) + " degrees" + " = "
-        + AngleUtils.formatDegToDms(Math.toDegrees(azimuthRadians), 0, 360));
-    log.info("Altitude=" + Math.toDegrees(decRadians) + " degrees" + " = "
-        + AngleUtils.formatDegToDms(Math.toDegrees(decRadians), -180, 180));
+    double rasHours = Math.toDegrees(rasRadians) / 15.0;
+    double decDegrees = Math.toDegrees(decRadians);
+    double sTime = SiderealTime.calculateApparentSiderealTime(jd,
+        nutation.getDeltaLongitude(), nutation.getDeltaObliquity());
+    HorizontalCoordinates h = new EquatorialCoordinates(rasHours, decDegrees)
+        .toHorizontal(sTime, longitudeInDegrees, latitudeInDegrees);
+    double azimuthDegrees = h.getAzimuth();
+    double altitudeDegrees = h.getAltitude();
+    log.info("Azimuth=" + azimuthDegrees + " degrees" + " = "
+        + AngleUtils.formatDegToDms(azimuthDegrees, 0, 360));
+    log.info("Altitude=" + altitudeDegrees + " degrees" + " = "
+        + AngleUtils.formatDegToDms(altitudeDegrees, -180, 180));
 
     // correct altitude from atmospheric refraction
-    double altCorrected = new AtmosphericRefraction(Math.toDegrees(altRadians))
+    double altitudeCorrectedDegrees = new AtmosphericRefraction(altitudeDegrees)
         .getApparentAltitude();
 
-    return new SunPosition(Math.toDegrees(azimuthRadians), altCorrected);
+    return new SunPosition(azimuthDegrees, altitudeCorrectedDegrees);
   }
 }
