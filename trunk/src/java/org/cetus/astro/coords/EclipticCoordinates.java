@@ -55,27 +55,7 @@ public class EclipticCoordinates extends SkyCoordinates {
    * @return EquatorialCoordinates instance.
    */
   public EquatorialCoordinates toEquatorial() {
-    /*
-     * double ras = 0d; // right ascension in J2000.0 double dec = 0d; //
-     * declination in J2000.0
-     * 
-     * double ln = getLon() AngleUnit.convert(AngleUnit.DEGREES,
-     * AngleUnit.RADIANS); double lt = getLat()
-     * AngleUnit.convert(AngleUnit.DEGREES, AngleUnit.RADIANS);
-     * 
-     * ras = Math.atan2( (Math.sin(ln) * Math.cos(E_J2000) - Math.tan(lt) *
-     * Math.sin(E_J2000)), Math.cos(ln)); dec = Math.asin(Math.sin(lt) *
-     * Math.cos(E_J2000) + Math.cos(lt) Math.sin(E_J2000) * Math.sin(ln));
-     * 
-     * while (ras > 2 * Math.PI) ras -= 2 * Math.PI; while (ras < 0.0) ras += 2
-     * * Math.PI;
-     * 
-     * ras *= AngleUnit.convert(AngleUnit.RADIANS, AngleUnit.HOURS); dec *=
-     * AngleUnit.convert(AngleUnit.RADIANS, AngleUnit.DEGREES);
-     * 
-     * return new EquatorialCoordinates(ras, dec,
-     * EquatorialCoordinates.EPOCH_J2000);
-     */
+    // TODO
     return null;
   }
 
