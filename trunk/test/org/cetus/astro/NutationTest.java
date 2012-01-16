@@ -9,8 +9,8 @@ public class NutationTest {
   @Test
   public void testCalculateNutation() {
     Nutation nutation = new Nutation(new JulianDay(1987, 4, 10.0));
-    assertEquals(-3.788, nutation.getDeltaLongitude(), 0.2);
-    assertEquals(9.443, nutation.getDeltaObliquity(), 0.1);
+    assertEquals(-3.788, nutation.getDeltaLongitude(), 0.02);
+    assertEquals(9.443, nutation.getDeltaObliquity(), 0.01);
   }
 
 }

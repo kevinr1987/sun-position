@@ -21,6 +21,8 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
+import org.cetus.astro.util.AngleUtils;
+import org.cetus.astro.util.DateTimeUtils;
 
 /**
  * Implementation of a low accuracy algorithm to calculate the sun position as
@@ -105,7 +107,7 @@ public class SunPositionAlgorithmLowRes extends SunPositionAlgorithm {
   public SunPosition calculateSunPosition() {
     log.debug("Into SunPositionAlgorithmLowRes.calculateSunPosition");
 
-    // calculate julian day
+    // calculate Julian day
     Calendar calendar = DateTimeUtils.parseCalendar(this.year, this.month,
         this.day, this.hour, this.minute, this.second, 0, this.timeZone);
     JulianDay jd = new JulianDay(calendar);
@@ -119,9 +121,11 @@ public class SunPositionAlgorithmLowRes extends SunPositionAlgorithm {
     // calculate geometric mean longitude of the Sun referred to the mean
     // equinox of the date o(t^3)
     double mlon = 280.46646 + 36000.76983 * t + 0.0003032 * t2;
+    mlon = AngleUtils.normalizeAngle(mlon, 0, 360);
     log.debug("Mean longitude=" + mlon + " degrees");
     // calculate the mean anomaly o(t^3)
     double mano = 357.52911 + 35999.05029 * t - 0.0001537 * t2;
+    mano = AngleUtils.normalizeAngle(mano, 0, 360);
     double manoRadians = Math.toRadians(mano);
     log.debug("Mean anomaly=" + mano + " degrees");
 
@@ -131,19 +135,21 @@ public class SunPositionAlgorithmLowRes extends SunPositionAlgorithm {
         * Math.sin(2 * manoRadians) + 0.000289 * Math.sin(3 * manoRadians);
     log.debug("Center=" + c + " degrees");
     double tlon = mlon + c;
+    tlon = AngleUtils.normalizeAngle(tlon, 0, 360);
     log.debug("True Longitude=" + tlon + " degrees");
 
     // calculate the apparent longitude, taking nutation in longitude and
     // aberration into account
+    Nutation nutation = new Nutation(t);
     double aberration = -0.00569;
-    double nutationLon = new Nutation(t).getDeltaLongitude() / 3600;
+    double nutationLon = nutation.getDeltaLongitude() / 3600;
     double lambda = tlon + aberration + nutationLon;
     double lambdaRadians = Math.toRadians(lambda);
-    log.debug("Apparent longitude=" + lambda + " degrees = "
-        + AngleUtils.normalizeAngle(lambda, 0, 360) + " degrees");
+    log.debug("Apparent longitude=" + lambda + " degrees");
 
     // calculate the true obliquity of the eclipse corrected for nutation o(t^4)
-    double epsilon = EclipticObliquity.calculateTrueObliquity(t);
+    double epsilon = EclipticObliquity.calculateTrueObliquity(t,
+        nutation.getDeltaObliquity());   
     double epsilonRadians = Math.toRadians(epsilon);
     log.debug("Epsilon=" + epsilon + " degrees");
 
@@ -154,29 +160,35 @@ public class SunPositionAlgorithmLowRes extends SunPositionAlgorithm {
         Math.cos(lambdaRadians));
     double decRadians = Math.asin(Math.sin(epsilonRadians)
         * Math.sin(lambdaRadians));
-    log.debug("Ras=" + Math.toDegrees(rasRadians) + " degrees" + " = "
+    log.info("Ras=" + Math.toDegrees(rasRadians) + " degrees" + " = "
         + AngleUtils.formatDegToHms(Math.toDegrees(rasRadians), 0, 360));
-    log.debug("Dec=" + Math.toDegrees(decRadians) + " degrees" + " = "
+    log.info("Dec=" + Math.toDegrees(decRadians) + " degrees" + " = "
         + AngleUtils.formatDegToDms(Math.toDegrees(decRadians), -180, 180));
 
     // convert sun coordinates from equatorial to horizontal
-    double hourAngle = SiderealTime.calculateApparentSiderealTime(jd)
+    double hourAngle = SiderealTime.calculateApparentSiderealTime(jd,
+        nutation.getDeltaLongitude(), nutation.getDeltaObliquity())
         - longitudeInDegrees - Math.toDegrees(rasRadians);
     double hourAngleRadians = Math.toRadians(hourAngle);
     double latRadians = Math.toRadians(this.latitudeInDegrees);
 
-    double azimuth = Math.atan2(
+    double azimuthRadians = Math.atan2(
         Math.sin(hourAngleRadians),
         (Math.cos(hourAngleRadians) * Math.sin(latRadians) - Math
             .tan(decRadians) * Math.cos(latRadians)));
-    double alt = Math.asin(Math.sin(latRadians) * Math.sin(decRadians)
+    double altRadians = Math.asin(Math.sin(latRadians) * Math.sin(decRadians)
         + Math.cos(latRadians) * Math.cos(decRadians)
         * Math.cos(hourAngleRadians));
-    
+
+    log.info("Azimuth=" + Math.toDegrees(azimuthRadians) + " degrees" + " = "
+        + AngleUtils.formatDegToDms(Math.toDegrees(azimuthRadians), 0, 360));
+    log.info("Altitude=" + Math.toDegrees(decRadians) + " degrees" + " = "
+        + AngleUtils.formatDegToDms(Math.toDegrees(decRadians), -180, 180));
+
     // correct altitude from atmospheric refraction
-    double altCorrected = new AtmosphericRefraction(Math.toDegrees(alt))
+    double altCorrected = new AtmosphericRefraction(Math.toDegrees(altRadians))
         .getApparentAltitude();
-    
-    return new SunPosition(Math.toDegrees(azimuth), altCorrected);
+
+    return new SunPosition(Math.toDegrees(azimuthRadians), altCorrected);
   }
 }

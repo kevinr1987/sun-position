@@ -17,6 +17,8 @@
  */
 package org.cetus.astro;
 
+import org.cetus.astro.util.AngleUtils;
+
 /**
  * @author Inaki Ortiz de Landaluce Saiz
  * 
@@ -79,5 +81,22 @@ public class EclipticObliquity {
   public static double calculateTrueObliquity(double t) {
     Nutation nutation = new Nutation(t);
     return calculateMeanObliquity(t) + nutation.getDeltaObliquity() / 3600;
+  }
+
+  /**
+   * Calculates the obliquity of the ecliptic with respect to the true equator
+   * for the given time. The correction for nutation is taken into account.
+   * 
+   * @param t
+   *          the time measured in Julian centuries of 36525 ephemeris days from
+   *          the epoch J2000.0
+   * 
+   * @param deltaObliquity
+   *          the delta component perpendicular to the ecliptic due to nutation
+   *          in arcseconds
+   * @return the true obliquity in degrees
+   */
+  public static double calculateTrueObliquity(double t, double deltaObliquity) {
+    return calculateMeanObliquity(t) + deltaObliquity / 3600;
   }
 }
