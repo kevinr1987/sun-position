@@ -20,8 +20,8 @@ public class SiderealTimeTest {
   @Test
   public final void testCalculateMeanSiderealTime() {
     JulianDay jd = new JulianDay(1987, 4, 10, 19, 21, 0, 0);
-    assertEquals(2446896.30625, jd.getJD(), 0.00001);
-    assertEquals(-1677831.2621266, SiderealTime.calculateMeanSiderealTime(jd),
+    assertEquals(2446896.30625, jd.getJD(), 0.00001);    
+    assertEquals(128.737873, SiderealTime.calculateMeanSiderealTime(jd),
         0.000001);
   }
 
