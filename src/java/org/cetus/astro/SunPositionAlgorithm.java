@@ -19,9 +19,11 @@ package org.cetus.astro;
 
 import java.util.TimeZone;
 
+import org.cetus.astro.util.DateTimeUtils;
+
 /**
  * @author Inaki Ortiz de Landaluce Saiz
- *
+ * 
  */
 public abstract class SunPositionAlgorithm {
 
@@ -36,7 +38,7 @@ public abstract class SunPositionAlgorithm {
   protected double latitudeInDegrees;
 
   /**
-   * Creates an instance of SunPositionAlgorithm to calculate the sun position 
+   * Creates an instance of SunPositionAlgorithm to calculate the sun position
    * for a given date and assuming calendar is Gregorian.
    * 
    * @param year
@@ -60,8 +62,8 @@ public abstract class SunPositionAlgorithm {
    *          geographical latitude in degrees of the location the sun position
    *          is to be calculated for
    */
-  public SunPositionAlgorithm(int year, int month, int day, int hour, int minute,
-      int second, TimeZone zone, double longitude, double latitude) {
+  public SunPositionAlgorithm(int year, int month, int day, int hour,
+      int minute, int second, TimeZone zone, double longitude, double latitude) {
     this.year = year;
     this.month = month;
     this.day = day;
@@ -96,8 +98,8 @@ public abstract class SunPositionAlgorithm {
    *          geographical latitude in degrees of the location the sun position
    *          is to be calculated for
    */
-  public SunPositionAlgorithm(int year, int month, int day, int hour, int minute,
-      int second, double longitude, double latitude) {
+  public SunPositionAlgorithm(int year, int month, int day, int hour,
+      int minute, int second, double longitude, double latitude) {
     this(year, month, day, hour, minute, second,
         DateTimeUtils.getGmtTimeZone(), longitude, latitude);
   }

@@ -15,7 +15,7 @@
  * License along with this program. If not, see 
  * <http://www.gnu.org/licenses/>
  */
-package org.cetus.astro;
+package org.cetus.astro.util;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -48,8 +48,8 @@ public class DateTimeUtils {
    */
   public static double deltaTimeCurrentCentury(int year) {
     // calculate time measured in centuries from epoch 2000.0
-    double t = (double)(year - 2000) / 100;
-    return (102 + 102*t + 25.3*t*t + (year-2100)*0.37);
+    double t = (double) (year - 2000) / 100;
+    return (102 + 102 * t + 25.3 * t * t + (year - 2100) * 0.37);
   }
 
   /**

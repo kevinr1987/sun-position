@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.apache.log4j.Logger;
+import org.cetus.astro.util.DateTimeUtils;
 
 /**
  * @author Inaki Ortiz de Landaluce Saiz
@@ -54,7 +55,7 @@ public class JulianDay {
             + (double) calendar.get(Calendar.SECOND) / (24 * 60 * 60)
             + (double) calendar.get(Calendar.MILLISECOND)
             / (24 * 60 * 60 * 1000));
-  }  
+  }
 
   /**
    * Creates a JulianDay instance for a given date assuming all arguments refer
@@ -84,7 +85,7 @@ public class JulianDay {
   }
 
   /**
-   * Creates a JulianDay instance for a given date assuming all arguments refer 
+   * Creates a JulianDay instance for a given date assuming all arguments refer
    * to time zone GMT+0 and are based on a Gregorian calendar.
    * 
    * @param year
@@ -98,7 +99,7 @@ public class JulianDay {
   public JulianDay(int year, int month, double day) {
     this.jd = calculateJulianDay(year, month, day);
   }
-  
+
   /**
    * Creates a JulianDay instance assuming the given calendar is Gregorian and
    * time zone is GMT+0.
@@ -113,16 +114,16 @@ public class JulianDay {
         calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
         calendar.get(Calendar.SECOND), calendar.get(Calendar.MILLISECOND));
   }
-  
-  
+
   /**
    * Returns the Julian Day
+   * 
    * @return the Julian Day value
    */
   public double getJD() {
     return this.jd;
   }
-  
+
   /**
    * Returns the time measured in Julian centuries of 36525 ephemeris days from
    * the epoch J2000.0
@@ -131,12 +132,13 @@ public class JulianDay {
    *         epoch J2000.0
    */
   public double getTimeFromJ2000() {
-    // epoch J2000.0 is 2000 January 1.5 or 2451545.0 JD    
+    // epoch J2000.0 is 2000 January 1.5 or 2451545.0 JD
     return (getJD() - 2451545.0) / 36525;
-  }  
+  }
 
   /**
    * Returns the Modified Julian Day
+   * 
    * @return the Modified Julian Day value
    */
   public double getMJD() {
@@ -157,6 +159,7 @@ public class JulianDay {
    * @return the Julian day
    */
   private double calculateJulianDay(int year, int month, double day) {
+    log.debug("Into JulianDay.calculateJulianDay");
     int y = year;
     int m = month;
     // if month is Jan or Feb, month is 13 or 14 for previous year respectively
@@ -179,7 +182,7 @@ public class JulianDay {
     double jd = (int) (365.25 * (y + 4716)) + (int) (30.6 * (m + 1)) + day + b
         - 1524.5;
     log.debug("JD=" + jd);
-
+    log.debug("Exit JulianDay.calculateJulianDay");
     return jd;
   }
 }

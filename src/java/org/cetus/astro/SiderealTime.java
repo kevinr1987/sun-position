@@ -18,6 +18,7 @@
 package org.cetus.astro;
 
 import org.apache.log4j.Logger;
+import org.cetus.astro.util.AngleUtils;
 
 /**
  * @author Inaki Ortiz de Landaluce Saiz
@@ -28,21 +29,50 @@ public class SiderealTime {
   private static Logger log = Logger.getRootLogger();
 
   /**
-   * Calculates the mean sidereal time for the given julian day. The correction
-   * for nutation is taken into account.
+   * Calculates the apparent sidereal time for the given julian day. The
+   * correction for nutation is taken into account.
    * 
    * @param jd
    *          the julian day
    * @return the apparent sidereal time in degrees
    */
   public static double calculateApparentSiderealTime(JulianDay jd) {
+    Nutation nutation = new Nutation(jd);
+    return calculateApparentSiderealTime(jd, nutation.getDeltaLongitude(),
+        nutation.getDeltaObliquity());
+  }
+
+  /**
+   * Calculates the apparent sidereal time for the given julian day. The
+   * correction for nutation is taken into account.
+   * 
+   * @param jd
+   *          the julian day
+   * 
+   * @param deltaLongitude
+   *          the delta component along the ecliptic due to nutation in
+   *          arcseconds
+   * 
+   * @param deltaObliquity
+   *          the delta component perpendicular to the ecliptic due to nutation
+   *          in arcseconds
+   * 
+   * @return the apparent sidereal time in degrees
+   */
+  public static double calculateApparentSiderealTime(JulianDay jd,
+      double deltaLongitude, double deltaObliquity) {
     log.debug("Into SiderealTime.calculateApparentSiderealTime");
-    double deltaPsi = new Nutation(jd).getDeltaLongitude() / 3600; // degrees
-    log.debug("Nutation in longitude = " + deltaPsi + " degrees" );
-    double eps = EclipticObliquity.calculateTrueObliquity(jd);
-    log.debug("Ecliptic obliquity = " + eps + " degrees" );
-    return calculateMeanSiderealTime(jd) + (Math.cos(Math.toRadians(eps))
-        * deltaPsi);
+    double deltaPsi = deltaLongitude / 3600; // degrees
+    log.debug("Nutation in longitude = " + deltaPsi + " degrees");
+    double eps = EclipticObliquity.calculateTrueObliquity(
+        jd.getTimeFromJ2000(), deltaObliquity);
+    log.debug("Ecliptic obliquity = " + eps + " degrees");
+    double ast = calculateMeanSiderealTime(jd)
+        + (Math.cos(Math.toRadians(eps)) * deltaPsi);
+    log.debug("Apparent Sidereal Time "
+        + AngleUtils.formatDegToHms(ast, 0, 360));
+    log.debug("Exit SiderealTime.calculateApparentSiderealTime");
+    return ast;
   }
 
   /**
@@ -54,10 +84,15 @@ public class SiderealTime {
    * @return the mean sidereal time in degrees
    */
   public static double calculateMeanSiderealTime(JulianDay jd) {
+    log.debug("Into SiderealTime.calculateMeanSiderealTime");
     double t = jd.getTimeFromJ2000();
     double t2 = t * t;
     // calculate the mean sidereal time at Greenwich for that instant
-    return (280.46061837 + 360.98564736629 * (jd.getJD() - 2451545.0)
+    double mst = (280.46061837 + 360.98564736629 * (jd.getJD() - 2451545.0)
         + 0.000387933 * t2 - (t * t2) / 38710000);
+    mst = AngleUtils.normalizeAngle(mst, 0, 360);
+    log.debug("Mean Sidereal Time " + AngleUtils.formatDegToHms(mst, 0, 360));
+    log.debug("Exit SiderealTime.calculateMeanSiderealTime");
+    return mst;
   }
 }

@@ -2,6 +2,7 @@ package org.cetus.astro;
 
 import static org.junit.Assert.*;
 
+import org.cetus.astro.util.AngleUtils;
 import org.junit.Test;
 
 public class SiderealTimeTest {

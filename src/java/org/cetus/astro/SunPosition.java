@@ -19,7 +19,7 @@ package org.cetus.astro;
 
 /**
  * @author Inaki Ortiz de Landaluce Saiz
- *
+ * 
  */
 public class SunPosition {
 
@@ -29,8 +29,11 @@ public class SunPosition {
   /**
    * Creates an instance of SunPosition for the given horizontal coordinates,
    * both measured in degrees.
-   * @param azimuth azimuth in degrees
-   * @param altitude altitude in degrees
+   * 
+   * @param azimuth
+   *          azimuth in degrees
+   * @param altitude
+   *          altitude in degrees
    */
   public SunPosition(double azimuth, double altitude) {
     this.azimuth = azimuth;

@@ -27,7 +27,7 @@ public class AtmosphericRefraction {
   private double temperatureKelvin;
   private double trueAltitudeDegrees;
   private double refractionArcmin;
-  
+
   /**
    * Creates an instance of AtomsphericRefraction for a given altitude,
    * atmospheric pressure and air temperature
@@ -53,7 +53,7 @@ public class AtmosphericRefraction {
    * 
    * @param altitude
    *          the true altitude in degrees
-   */  
+   */
   public AtmosphericRefraction(double altitude) {
     // pressure is 1010 millibars, temperature 10 degrees Celsius
     this(altitude, 1010, 283);
@@ -61,6 +61,7 @@ public class AtmosphericRefraction {
 
   /**
    * Returns the apparent altitude in degrees once corrected by refraction
+   * 
    * @return the apparent altitude in degrees
    */
   public double getApparentAltitude() {
@@ -69,13 +70,14 @@ public class AtmosphericRefraction {
 
   /**
    * Returns the refraction correction in arcminutes
+   * 
    * @return the refraction correction in arcminutes
    */
   public double getRefraction() {
-    return this.refractionArcmin; 
+    return this.refractionArcmin;
   }
-  
-  private double calculateRefraction() {    
+
+  private double calculateRefraction() {
     double r = 1.02 / Math.tan(Math.toRadians(trueAltitudeDegrees + 10.3
         / (trueAltitudeDegrees + 5.11)));
     // correct from standard conditions of air pressure and temperature
